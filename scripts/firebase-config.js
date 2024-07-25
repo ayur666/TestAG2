@@ -207,6 +207,8 @@ function addItem() {
 
             if (itemValueInCopper > totalFundsInCopper) {
                 alert("The blacksmith can't afford to add this item!");
+                // Ensure form inputs are cleared even if the item cannot be added
+                clearFormInputs();
                 return;
             }
 
@@ -227,19 +229,30 @@ function addItem() {
             }).then(() => {
                 fetchItems('blacksmithshop'); // Refresh the item list
                 fetchFunds(); // Refresh the available funds display
+                // Clear form inputs after successful item addition
+                clearFormInputs();
             }).catch((error) => {
                 console.error("Error adding document or updating funds: ", error);
+                // Clear form inputs in case of error
+                clearFormInputs();
             });
-
-            // Clear form inputs
-            document.getElementById('item-name').value = '';
-            document.getElementById('item-value').value = '';
-            document.getElementById('item-currency').value = '';
-            document.getElementById('item-rarity').value = '';
-            document.getElementById('item-requirements').value = '';
-            document.getElementById('item-stockValue').value = '';
-            document.getElementById('item-modifier').value = '';
-            document.getElementById('item-description').value = '';
         }
+    }).catch((error) => {
+        console.error("Error fetching funds: ", error);
+        // Clear form inputs if there is an error fetching funds
+        clearFormInputs();
     });
 }
+
+// Function to clear form inputs
+function clearFormInputs() {
+    document.getElementById('item-name').value = '';
+    document.getElementById('item-value').value = '';
+    document.getElementById('item-currency').value = '';
+    document.getElementById('item-rarity').value = '';
+    document.getElementById('item-requirements').value = '';
+    document.getElementById('item-stockValue').value = '';
+    document.getElementById('item-modifier').value = '';
+    document.getElementById('item-description').value = '';
+}
+
