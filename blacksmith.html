@@ -25,6 +25,16 @@
                 <!-- Items will be dynamically inserted here -->
             </ul>
         </section>
+
+        <section id="add-item">
+            <h2>Add a New Item</h2>
+            <form id="add-item-form">
+                <input type="text" id="item-name" placeholder="Item Name" required>
+                <input type="number" id="item-value" placeholder="Item Value" required>
+                <input type="text" id="item-currency" placeholder="Currency" required>
+                <button type="submit">Add Item</button>
+            </form>
+        </section>
     </main>
     <footer>
         <p>&copy; 2024 Fantasy RPG Shops</p>
@@ -33,7 +43,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            fetchItems('blacksmithshop'); // Make sure 'blacksmith' matches your Firestore collection name
+            fetchItems('blacksmithshop');
+            
+            document.getElementById('add-item-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addItem();
+            });
         });
     </script>
 </body>

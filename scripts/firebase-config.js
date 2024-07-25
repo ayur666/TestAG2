@@ -1,5 +1,3 @@
-// firebase-config.js
-
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyA2h0Y1Km5nWDGCNIBRUChtH481Q-lt8dw",
@@ -16,15 +14,52 @@ firebase.initializeApp(firebaseConfig);
 // Initialize Firestore
 var db = firebase.firestore();
 
-// Example function to fetch items for a specific shop
-function fetchItems(blacksmithshop) {
-  db.collection(blacksmithshop).get().then((querySnapshot) => {
+// Function to fetch items for a specific shop
+function fetchItems(shop) {
+  db.collection(shop).get().then((querySnapshot) => {
       let itemsList = '';
       querySnapshot.forEach((doc) => {
-          itemsList += `<li>${doc.data().Name} - ${doc.data().Value} ${doc.data().Currency}</li>`;
+          itemsList += `
+              <li>
+                  ${doc.data().Name} - ${doc.data().Value} ${doc.data().Currency}
+                  <button onclick="buyItem('${doc.id}', '${shop}')">Buy</button>
+              </li>`;
       });
-      document.getElementById('items').innerHTML = `<ul>${itemsList}</ul>`;
+      document.getElementById('items-list').innerHTML = itemsList;
+  }).catch((error) => {
+      console.error("Error fetching items: ", error);
   });
 }
 
+// Function to buy an item (remove from the database)
+function buyItem(itemId, shop) {
+  db.collection(shop).doc(itemId).delete().then(() => {
+      console.log("Item successfully deleted!");
+      fetchItems(shop); // Refresh the item list
+  }).catch((error) => {
+      console.error("Error removing item: ", error);
+  });
+}
 
+// Function to add a new item to the shop
+function addItem() {
+  const itemName = document.getElementById('item-name').value;
+  const itemValue = document.getElementById('item-value').value;
+  const itemCurrency = document.getElementById('item-currency').value;
+
+  db.collection('blacksmithshop').add({
+      Name: itemName,
+      Value: parseInt(itemValue),
+      Currency: itemCurrency
+  }).then((docRef) => {
+      console.log("Document written with ID: ", docRef.id);
+      fetchItems('blacksmithshop'); // Refresh the item list
+  }).catch((error) => {
+      console.error("Error adding document: ", error);
+  });
+
+  // Clear form inputs
+  document.getElementById('item-name').value = '';
+  document.getElementById('item-value').value = '';
+  document.getElementById('item-currency').value = '';
+}
