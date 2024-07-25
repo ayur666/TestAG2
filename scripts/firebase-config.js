@@ -108,7 +108,7 @@ function addItem() {
     const itemCurrency = document.getElementById('item-currency').value;
     const itemRarity = document.getElementById('item-rarity').value;
     const itemRequirements = document.getElementById('item-requirements').value;
-    const itemStockValue = document.getElementById('item-stockValue').value;
+    const itemStockValue = parseInt(document.getElementById('item-stockValue').value);
     const itemModifier = document.getElementById('item-modifier').value;
     const itemDescription = document.getElementById('item-description').value;
 
