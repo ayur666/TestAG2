@@ -50,9 +50,9 @@
             <p id="blacksmith-funds"></p> <!-- Placeholder for available funds -->
         </section>
 
-        <section id="add-item">
+        <section id="sell-item">
             <h2>Sell an Item</h2>
-            <form id="add-item-form">
+            <form id="sell-item-form">
                 <input type="text" id="item-name" placeholder="Item Name" required>
                 <input type="number" id="item-value" placeholder="Item Value" required>
                 <input type="text" id="item-currency" placeholder="Currency" required>
@@ -74,9 +74,9 @@
         document.addEventListener('DOMContentLoaded', function () {
             fetchItems('blacksmithshop');
             fetchFunds();
-            document.getElementById('add-item-form').addEventListener('submit', function(e) {
+            document.getElementById('sell-item-form').addEventListener('submit', function(e) {
                 e.preventDefault();
-                addItem();
+                sellItem();
             });
         });
     </script>

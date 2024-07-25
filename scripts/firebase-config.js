@@ -125,12 +125,7 @@ function buyItem(itemId, shop, itemPrice, itemCurrency) {
                             itemPriceInCopper = itemPrice;
                     }
 
-                    if (itemPriceInCopper > totalFundsInCopper) {
-                        alert("The blacksmith can't afford this item!");
-                        return; // Exit the function if the funds are not sufficient
-                    }
-
-                    const newTotalFundsInCopper = totalFundsInCopper - itemPriceInCopper;
+                    const newTotalFundsInCopper = totalFundsInCopper + itemPriceInCopper;
                     const newFunds = convertFromCopper(newTotalFundsInCopper);
 
                     if (currentStock > 1) {
@@ -175,7 +170,7 @@ function buyItem(itemId, shop, itemPrice, itemCurrency) {
 }
 
 // Function to add a new item to the shop
-function addItem() {
+function sellItem() {
     const itemName = document.getElementById('item-name').value;
     const itemValue = parseInt(document.getElementById('item-value').value);
     const itemCurrency = document.getElementById('item-currency').value;
