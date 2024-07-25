@@ -79,127 +79,127 @@ const firebaseConfig = {
       });
   }
   
-  // Function to update the blacksmith's available funds
-  function updateFunds(amount) {
-      db.collection('merchant').doc('blacksmith').get().then((doc) => {
-          if (doc.exists) {
-              const data = doc.data();
-              let totalFunds = data.gold * 10000 + data.silver * 100 + data.copper;
-              totalFunds += amount;
-  
-              let newGold = Math.floor(totalFunds / 10000);
-              totalFunds %= 10000;
-              let newSilver = Math.floor(totalFunds / 100);
-              let newCopper = totalFunds % 100;
-  
-              return db.collection('merchant').doc('blacksmith').update({
-                  gold: newGold,
-                  silver: newSilver,
-                  copper: newCopper
-              }).then(() => {
-                  fetchFunds(); // Refresh the funds display
-                  console.log("Funds updated successfully!");
-              }).catch((error) => {
-                  console.error("Error updating funds: ", error);
-              });
-          }
-      }).catch((error) => {
-          console.error("Error getting document: ", error);
-      });
-  }
-  
-  // Function to buy an item (check stock and update or delete item based on stock)
-  function buyItem(itemId, shop, itemValue) {
-      fetchFunds().then((funds) => {
-          const totalFunds = funds.gold * 10000 + funds.silver * 100 + funds.copper;
-          
-          if (itemValue > totalFunds) {
-              alert("The blacksmith can't afford this item!");
-              return;
-          }
-  
-          const itemRef = db.collection(shop).doc(itemId);
-          
-          itemRef.get().then((doc) => {
-              if (doc.exists) {
-                  const data = doc.data();
-                  const currentStock = parseInt(data.StockValue);
-  
-                  if (currentStock > 1) {
-                      // Decrease stock and update funds
-                      return itemRef.update({
-                          StockValue: currentStock - 1
-                      }).then(() => {
-                          updateFunds(itemValue); // Add item value to funds
-                          fetchItems(shop); // Refresh the item list
-                      }).catch((error) => {
-                          console.error("Error updating item stock: ", error);
-                      });
-                  } else if (currentStock === 1) {
-                      // Delete item and update funds
-                      return itemRef.delete().then(() => {
-                          updateFunds(itemValue); // Add item value to funds
-                          fetchItems(shop); // Refresh the item list
-                      }).catch((error) => {
-                          console.error("Error deleting item: ", error);
-                      });
-                  } else {
-                      alert("Item is out of stock!");
-                  }
-              } else {
-                  console.log("No such document!");
-              }
-          }).catch((error) => {
-              console.error("Error getting document: ", error);
-          });
-      });
-  }
-  
-  // Function to add a new item to the shop
-  function addItem() {
-      const itemName = document.getElementById('item-name').value;
-      const itemValue = parseInt(document.getElementById('item-value').value);
-      const itemCurrency = document.getElementById('item-currency').value;
-      const itemRarity = document.getElementById('item-rarity').value;
-      const itemRequirements = document.getElementById('item-requirements').value;
-      const itemStockValue = parseInt(document.getElementById('item-stockValue').value);
-      const itemModifier = document.getElementById('item-modifier').value;
-      const itemDescription = document.getElementById('item-description').value;
-  
-      fetchFunds().then((funds) => {
-          const totalFunds = funds.gold * 10000 + funds.silver * 100 + funds.copper;
-  
-          if (itemValue > totalFunds) {
-              alert("The blacksmith can't afford to add this item!");
-              return;
-          }
-  
-          db.collection('blacksmithshop').add({
-              Name: itemName,
-              Value: itemValue,
-              Currency: itemCurrency,
-              Rarity: itemRarity,
-              Requirements: itemRequirements,
-              StockValue: itemStockValue,
-              Modifier: itemModifier,
-              Description: itemDescription
-          }).then((docRef) => {
-              console.log("Document written with ID: ", docRef.id);
-              updateFunds(-itemValue); // Subtract item value from funds
-              fetchItems('blacksmithshop'); // Refresh the item list
-          }).catch((error) => {
-              console.error("Error adding document: ", error);
-          });
-  
-          // Clear form inputs
-          document.getElementById('item-name').value = '';
-          document.getElementById('item-value').value = '';
-          document.getElementById('item-currency').value = '';
-          document.getElementById('item-rarity').value = '';
-          document.getElementById('item-requirements').value = '';
-          document.getElementById('item-stockValue').value = '';
-          document.getElementById('item-modifier').value = '';
-          document.getElementById('item-description').value = '';
-      });
-  }
-  
+// Function to buy an item (check stock and update or delete item based on stock)
+function buyItem(itemId, shop) {
+    const itemRef = db.collection(shop).doc(itemId);
+
+    itemRef.get().then((doc) => {
+        if (doc.exists) {
+            const data = doc.data();
+            const currentStock = parseInt(data.StockValue);
+            const itemPrice = data.Value; // Assuming the price is in the same currency as the shop's funds
+
+            // Fetch current funds
+            return db.collection('merchant').doc('blacksmith').get().then((fundsDoc) => {
+                if (fundsDoc.exists) {
+                    const funds = fundsDoc.data();
+                    const totalFunds = funds.gold * 10000 + funds.silver * 100 + funds.copper;
+
+                    if (itemPrice > totalFunds) {
+                        alert("The blacksmith can't afford this item!");
+                        return; // Exit the function if the funds are not sufficient
+                    }
+
+                    if (currentStock > 1) {
+                        // Decrease stock and update funds
+                        return itemRef.update({
+                            StockValue: currentStock - 1
+                        }).then(() => {
+                            return updateFunds(funds, itemPrice); // Update funds after buying
+                        }).then(() => {
+                            console.log("Item stock and funds updated successfully!");
+                            fetchItems(shop); // Refresh the item list
+                            fetchFunds(); // Refresh the available funds display
+                        }).catch((error) => {
+                            console.error("Error updating item stock or funds: ", error);
+                        });
+                    } else if (currentStock === 1) {
+                        // Delete item and update funds
+                        return itemRef.delete().then(() => {
+                            return updateFunds(funds, itemPrice); // Update funds after deleting
+                        }).then(() => {
+                            console.log("Item successfully deleted and funds updated!");
+                            fetchItems(shop); // Refresh the item list
+                            fetchFunds(); // Refresh the available funds display
+                        }).catch((error) => {
+                            console.error("Error deleting item or updating funds: ", error);
+                        });
+                    } else {
+                        alert("Item is out of stock!");
+                    }
+                } else {
+                    console.log("No funds document found!");
+                }
+            }).catch((error) => {
+                console.error("Error fetching funds document: ", error);
+            });
+        } else {
+            console.log("No such item document!");
+        }
+    }).catch((error) => {
+        console.error("Error getting item document: ", error);
+    });
+}
+
+// Function to update funds after a purchase
+function updateFunds(funds, itemPrice) {
+    const totalFunds = funds.gold * 10000 + funds.silver * 100 + funds.copper;
+    const newTotalFunds = totalFunds - itemPrice;
+
+    const newFunds = {
+        gold: Math.floor(newTotalFunds / 10000),
+        silver: Math.floor((newTotalFunds % 10000) / 100),
+        copper: newTotalFunds % 100
+    };
+
+    return db.collection('merchant').doc('blacksmith').update(newFunds);
+}
+
+
+// Function to add a new item to the shop
+function addItem() {
+    const itemName = document.getElementById('item-name').value;
+    const itemValue = parseInt(document.getElementById('item-value').value);
+    const itemCurrency = document.getElementById('item-currency').value;
+    const itemRarity = document.getElementById('item-rarity').value;
+    const itemRequirements = document.getElementById('item-requirements').value;
+    const itemStockValue = parseInt(document.getElementById('item-stockValue').value);
+    const itemModifier = document.getElementById('item-modifier').value;
+    const itemDescription = document.getElementById('item-description').value;
+
+    fetchFunds().then((funds) => {
+        const totalFunds = funds.gold * 10000 + funds.silver * 100 + funds.copper;
+
+        if (itemValue > totalFunds) {
+            alert("The blacksmith can't afford to add this item!");
+            return;
+        }
+
+        db.collection('blacksmithshop').add({
+            Name: itemName,
+            Value: itemValue,
+            Currency: itemCurrency,
+            Rarity: itemRarity,
+            Requirements: itemRequirements,
+            StockValue: itemStockValue,
+            Modifier: itemModifier,
+            Description: itemDescription
+        }).then((docRef) => {
+            console.log("Document written with ID: ", docRef.id);
+            updateFunds(funds, -itemValue); // Subtract item value from funds
+            fetchItems('blacksmithshop'); // Refresh the item list
+        }).catch((error) => {
+            console.error("Error adding document: ", error);
+        });
+
+        // Clear form inputs
+        document.getElementById('item-name').value = '';
+        document.getElementById('item-value').value = '';
+        document.getElementById('item-currency').value = '';
+        document.getElementById('item-rarity').value = '';
+        document.getElementById('item-requirements').value = '';
+        document.getElementById('item-stockValue').value = '';
+        document.getElementById('item-modifier').value = '';
+        document.getElementById('item-description').value = '';
+    });
+}
