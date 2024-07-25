@@ -14,6 +14,20 @@ firebase.initializeApp(firebaseConfig);
 // Initialize Firestore
 var db = firebase.firestore();
 
+// Convert currency values to Copper
+function convertToCopper(gold, silver, copper) {
+    return (gold * 10000) + (silver * 100) + copper;
+}
+
+// Convert Copper value to Gold, Silver, Copper
+function convertFromCopper(copper) {
+    return {
+        gold: Math.floor(copper / 10000),
+        silver: Math.floor((copper % 10000) / 100),
+        copper: copper % 100
+    };
+}
+
 // Function to fetch items for a specific shop
 function fetchItems(shop) {
     db.collection(shop).get().then((querySnapshot) => {
@@ -31,7 +45,7 @@ function fetchItems(shop) {
                         <p>Modifier: ${data.Modifier}</p>
                         <p>Stock: ${data.StockValue}</p>
                     </div>
-                    <button onclick="buyItem('${doc.id}', '${shop}', ${data.Value})">Buy</button>
+                    <button onclick="buyItem('${doc.id}', '${shop}', ${data.Value}, '${data.Currency}')">Buy</button>
                 </li>
                 `;
         });
@@ -68,7 +82,7 @@ function fetchFunds() {
     return db.collection('merchant').doc('blacksmith').get().then((doc) => {
         if (doc.exists) {
             const data = doc.data();
-            const totalFunds = data.gold * 10000 + data.silver * 100 + data.copper;
+            const totalFunds = convertToCopper(data.gold, data.silver, data.copper);
             document.getElementById('blacksmith-funds').innerText = `Funds: ${data.gold} Gold, ${data.silver} Silver, ${data.copper} Copper`;
             return data;
         } else {
@@ -82,7 +96,7 @@ function fetchFunds() {
 }
 
 // Function to buy an item (check stock and update or delete item based on stock)
-function buyItem(itemId, shop, itemPrice) {
+function buyItem(itemId, shop, itemPrice, itemCurrency) {
     const itemRef = db.collection(shop).doc(itemId);
 
     itemRef.get().then((doc) => {
@@ -93,18 +107,31 @@ function buyItem(itemId, shop, itemPrice) {
             return db.collection('merchant').doc('blacksmith').get().then((fundsDoc) => {
                 if (fundsDoc.exists) {
                     const funds = fundsDoc.data();
-                    const totalFunds = funds.gold * 10000 + funds.silver * 100 + funds.copper;
+                    const totalFundsInCopper = convertToCopper(funds.gold, funds.silver, funds.copper);
+                    let itemPriceInCopper;
 
-                    if (itemPrice > totalFunds) {
+                    // Convert item price to Copper based on currency
+                    switch (itemCurrency.toLowerCase()) {
+                        case 'gold':
+                            itemPriceInCopper = itemPrice * 10000;
+                            break;
+                        case 'silver':
+                            itemPriceInCopper = itemPrice * 100;
+                            break;
+                        case 'copper':
+                            itemPriceInCopper = itemPrice;
+                            break;
+                        default:
+                            itemPriceInCopper = itemPrice;
+                    }
+
+                    if (itemPriceInCopper > totalFundsInCopper) {
                         alert("The blacksmith can't afford this item!");
                         return; // Exit the function if the funds are not sufficient
                     }
 
-                    const newFunds = {
-                        gold: Math.floor((totalFunds + itemPrice) / 10000),
-                        silver: Math.floor((totalFunds + itemPrice) % 10000 / 100),
-                        copper: (totalFunds + itemPrice) % 100
-                    };
+                    const newTotalFundsInCopper = totalFundsInCopper - itemPriceInCopper;
+                    const newFunds = convertFromCopper(newTotalFundsInCopper);
 
                     if (currentStock > 1) {
                         // Decrease stock and update funds
@@ -160,9 +187,25 @@ function addItem() {
 
     fetchFunds().then((funds) => {
         if (funds) {
-            const totalFunds = funds.gold * 10000 + funds.silver * 100 + funds.copper;
+            const totalFundsInCopper = convertToCopper(funds.gold, funds.silver, funds.copper);
+            let itemValueInCopper;
 
-            if (itemValue > totalFunds) {
+            // Convert item value to Copper based on currency
+            switch (itemCurrency.toLowerCase()) {
+                case 'gold':
+                    itemValueInCopper = itemValue * 10000;
+                    break;
+                case 'silver':
+                    itemValueInCopper = itemValue * 100;
+                    break;
+                case 'copper':
+                    itemValueInCopper = itemValue;
+                    break;
+                default:
+                    itemValueInCopper = itemValue;
+            }
+
+            if (itemValueInCopper > totalFundsInCopper) {
                 alert("The blacksmith can't afford to add this item!");
                 return;
             }
@@ -178,11 +221,8 @@ function addItem() {
                 Description: itemDescription
             }).then((docRef) => {
                 console.log("Document written with ID: ", docRef.id);
-                const newFunds = {
-                    gold: Math.floor((totalFunds - itemValue) / 10000),
-                    silver: Math.floor((totalFunds - itemValue) % 10000 / 100),
-                    copper: (totalFunds - itemValue) % 100
-                };
+                const newTotalFundsInCopper = totalFundsInCopper - itemValueInCopper;
+                const newFunds = convertFromCopper(newTotalFundsInCopper);
                 return db.collection('merchant').doc('blacksmith').update(newFunds);
             }).then(() => {
                 fetchItems('blacksmithshop'); // Refresh the item list
