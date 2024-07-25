@@ -86,7 +86,6 @@ header {
     position: fixed; /* Fix the header at the top of the page */
     top: 0;
     left: 0;
-    height: 15%;
     width: 100%; /* Full width */
     text-align: center; /* Center-align text and image */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for better visibility */
@@ -117,6 +116,6 @@ h1, h2 {
 
 /* Add some margin to the body content to prevent overlap with the fixed header */
 body {
-    margin-top: 150px; /* Adjust based on header height */
+    margin-top: 100px; /* Adjust based on header height */
 }
 
