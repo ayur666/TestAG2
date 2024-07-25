@@ -26,13 +26,13 @@ function fetchItems(shop) {
             itemsList += `
                 <li style="padding: 10px; border-bottom: 1px solid #ddd; margin-bottom: 10px;">
                     <span style="color: ${rarityColor};">${data.Name}</span> - ${data.Value} ${data.Currency}
-                    <button onclick="buyItem('${doc.id}', '${shop}')">Buy</button>
-                    <span>Stock: ${data.StockValue}</span>
                     <div>
                         <p>Requirements: ${data.Requirements}</p>
                         <p>Description: ${data.Description}</p>
                         <p>Modifier: ${data.Modifier}</p>
+                        <p>Stock: ${data.StockValue}</p>
                     </div>
+                    <button onclick="buyItem('${doc.id}', '${shop}')">Buy</button>
                 </li>
                 `;
         });
