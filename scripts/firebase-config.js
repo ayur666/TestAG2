@@ -17,7 +17,7 @@ firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 
 // Example function to fetch items for a specific shop
-function fetchItems(shop) {
+function fetchItems(blacksmithshop) {
   db.collection(blacksmithshop).get().then((querySnapshot) => {
       let itemsList = '';
       querySnapshot.forEach((doc) => {
