@@ -63,7 +63,7 @@ function getRarityColor(rarity) {
     }
 }
 
-// Function to buy an item (check stock and update stock if purchase is successful)
+// Function to buy an item (check stock and update or delete item based on stock)
 function buyItem(itemId, shop) {
     const itemRef = db.collection(shop).doc(itemId);
 
@@ -72,7 +72,7 @@ function buyItem(itemId, shop) {
             const data = doc.data();
             const currentStock = parseInt(data.StockValue);
 
-            if (currentStock > 0) {
+            if (currentStock > 1) {
                 // Decrease stock
                 return itemRef.update({
                     StockValue: currentStock - 1
@@ -81,6 +81,14 @@ function buyItem(itemId, shop) {
                     fetchItems(shop); // Refresh the item list
                 }).catch((error) => {
                     console.error("Error updating item stock: ", error);
+                });
+            } else if (currentStock === 1) {
+                // Delete item
+                return itemRef.delete().then(() => {
+                    console.log("Item successfully deleted!");
+                    fetchItems(shop); // Refresh the item list
+                }).catch((error) => {
+                    console.error("Error deleting item: ", error);
                 });
             } else {
                 alert("Item is out of stock!");
