@@ -41,7 +41,7 @@ function fetchItems(shop) {
     });
 }
 
-// Function to determine color based on item rarity
+// Function to get the color based on item rarity
 function getRarityColor(rarity) {
     switch (rarity.toLowerCase()) {
         case 'junk':
@@ -63,13 +63,33 @@ function getRarityColor(rarity) {
     }
 }
 
-// Function to buy an item (remove from the database)
+// Function to buy an item (check stock and update stock if purchase is successful)
 function buyItem(itemId, shop) {
-    db.collection(shop).doc(itemId).delete().then(() => {
-        console.log("Item successfully deleted!");
-        fetchItems(shop); // Refresh the item list
+    const itemRef = db.collection(shop).doc(itemId);
+
+    itemRef.get().then((doc) => {
+        if (doc.exists) {
+            const data = doc.data();
+            const currentStock = parseInt(data.StockValue);
+
+            if (currentStock > 0) {
+                // Decrease stock
+                return itemRef.update({
+                    StockValue: currentStock - 1
+                }).then(() => {
+                    console.log("Item stock updated successfully!");
+                    fetchItems(shop); // Refresh the item list
+                }).catch((error) => {
+                    console.error("Error updating item stock: ", error);
+                });
+            } else {
+                alert("Item is out of stock!");
+            }
+        } else {
+            console.log("No such document!");
+        }
     }).catch((error) => {
-        console.error("Error removing item: ", error);
+        console.error("Error getting document: ", error);
     });
 }
 
@@ -110,4 +130,3 @@ function addItem() {
     document.getElementById('item-modifier').value = '';
     document.getElementById('item-description').value = '';
 }
-
