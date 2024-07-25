@@ -10,6 +10,12 @@ const firebaseConfig = {
   appId: "1:937158092711:web:a03bee6d47f0534fd9f882"
 };
 
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+// Initialize Firestore
+var db = firebase.firestore();
+
 // Example function to fetch items for a specific shop
 function fetchItems(shop) {
   db.collection(blacksmithshop).get().then((querySnapshot) => {
@@ -22,8 +28,3 @@ function fetchItems(shop) {
 }
 
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-// Initialize Firestore
-var db = firebase.firestore();
