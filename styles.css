@@ -87,7 +87,6 @@ header {
     top: 0;
     left: 0;
     width: 100%; /* Full width */
-    background-color: white; /* Ensure background is opaque */
     text-align: center; /* Center-align text and image */
     padding: 10px 0; /* Add some padding */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for better visibility */
@@ -96,8 +95,8 @@ header {
 
 /* Adjust image size relative to the header font size */
 #guild-image {
-    width: 50%; /* Adjust width to be 50% of the header text */
-    height: auto; /* Maintain aspect ratio */
+    width: 10%; /* Adjust width to be 50% of the header text */
+    height: 10%; /* Maintain aspect ratio */
     max-width: 300px; /* Optional: set a maximum width */
     margin-bottom: 10px; /* Space between image and text */
 }
