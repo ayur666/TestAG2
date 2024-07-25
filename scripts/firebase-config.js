@@ -15,7 +15,7 @@ function fetchItems(shop) {
   db.collection(blacksmithshop).get().then((querySnapshot) => {
       let itemsList = '';
       querySnapshot.forEach((doc) => {
-          itemsList += `<li>${doc.data().name} - ${doc.data().Value} coins</li>`;
+          itemsList += `<li>${doc.data().name} - ${doc.data().Value} ${doc.data().Currency}</li>`;
       });
       document.getElementById('items').innerHTML = `<ul>${itemsList}</ul>`;
   });
