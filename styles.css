@@ -100,10 +100,16 @@ header {
     margin-bottom: 10px; /* Space between image and text */
 }
 
-/* Adjust image size relative to the header font size */
-#garret-ironhand-image, #ironhand-forge-image {
-    width: 10%; /* Adjust width to be 50% of the header text */
+#garret-ironhand-image {
+    width: 10%; 
     height: 10%; /* Maintain aspect ratio */
+    max-width: 300px; /* Optional: set a maximum width */
+    margin-bottom: 10px; /* Space between image and text */
+}
+
+#ironhand-forge-image {
+    width: 25%; 
+    height: 20%; /* Maintain aspect ratio */
     max-width: 300px; /* Optional: set a maximum width */
     margin-bottom: 10px; /* Space between image and text */
 }
