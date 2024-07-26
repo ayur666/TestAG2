@@ -101,7 +101,7 @@ header {
 }
 
 /* Adjust image size relative to the header font size */
-#garret-ironhand-image {
+#garret-ironhand-image, #ironhand-forge-image {
     width: 10%; /* Adjust width to be 50% of the header text */
     height: 10%; /* Maintain aspect ratio */
     max-width: 300px; /* Optional: set a maximum width */
