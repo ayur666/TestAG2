@@ -1,29 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fantasy RPG Shops</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="index.css" />
     <script src="scripts/navigation.js" defer></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-        <h1>Fantasy RPG Shops</h1>
+      <h2>Fantasy RPG Shops</h2>
     </header>
     <main>
-        <section id="shops">
-            <h2>Available Shops</h2>
-            <ul>
-                <li><a href="#" onclick="navigateTo('blacksmith.html')">Blacksmith</a></li>
-                <li><a href="#" onclick="navigateTo('potion-shop.html')">Potion Shop</a></li>
-                <li><a href="#" onclick="navigateTo('magic-shop.html')">Magic Shop</a></li>
-            </ul>
-        </section>
+      <section id="shops">
+        <div class="shop-container">
+            <div class="shop-item">
+              <a href="blacksmith.html">
+                <img src="resources/blacksmith-door.png" alt="Blacksmith Door">
+              </a>
+            </div>
+            <div class="shop-item">
+              <a href="potion-shop.html">
+                <img src="resources/potion-shop-door.png" alt="Potion Shop Door">
+              </a>
+            </div>
+            <div class="shop-item">
+              <a href="magic-shop.html">
+                <img src="resources/magic-shop-door.png" alt="Magic Shop Door">
+              </a>
+            </div>
+      </section>
     </main>
     <footer>
-        <p>&copy; 2024 Fantasy RPG Shops</p>
+      <p>&copy; 2024 Fantasy RPG Shops</p>
     </footer>
-</body>
+  </body>
 </html>
