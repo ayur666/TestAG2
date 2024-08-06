@@ -36,14 +36,17 @@ const convertToCopper = (gold, silver, copper) => {
 
 const convertCurrencyToCopper = (curr, amount) => {
     checkPositiveNumbers(amount)
-    
+    if(!["gold","silver","copper"].includes(curr.toLowerCase())) {
+        throw new ArgumentError("Currency must be gold/silver/copper")
+
+    }
+
     switch(curr.toLowerCase()){
         case "gold": return amount * 10_000
         case "silver": return amount * 100
         case "copper": return amount
     }
     
-    throw new ArgumentError("Currency must be gold/silver/copper")
 }
 
 // Convert Copper value to Gold, Silver, Copper
