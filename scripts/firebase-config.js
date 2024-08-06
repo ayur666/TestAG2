@@ -11,6 +11,7 @@ const firebaseConfig = {
 class ArgumentError extends Error {
     constructor(msg) {
         super(msg);
+        alert(msg)
         this.name = this.constructor.name;
     }
 }
@@ -21,17 +22,18 @@ var db = firebase.firestore();
 
 // Type safety in spaghetti language
 const checkPositiveNumbers = (...args)  => {
-    for(let n in args){
+    args.forEach(n => {
         if(n < 0 || typeof(n) != "number"){
             throw new ArgumentError("Value must be a positive number")
         }
-    }
+    })
 }
 
 // Convert currency values to Copper
 const convertToCopper = (gold, silver, copper) => {
-    checkPositiveNumbers(gold, silver, copper)
-    (gold * 1000) + (silver * 100) + copper
+    checkPositiveNumbers(gold, silver, copper);
+
+    return (gold * 1000) + (silver * 100) + copper
 }
 
 const convertCurrencyToCopper = (curr, amount) => {
@@ -60,6 +62,48 @@ const convertFromCopper = (copper) => {
     }
 }
 
+
+class GameItem {
+    // to-do use better pattern
+    constructor(
+        name, 
+        value,
+        currency, 
+        rarity, 
+        requirements, 
+        stockValue, 
+        modifier, 
+        description) {
+            if(!name.match("[A-Za-z \'-]*")){
+                throw new ArgumentError("Name must be text and no special characters except ' or \\")
+            }
+
+            this.name = name
+
+            if(!["gold","silver","copper"].includes(currency.toLowerCase())){
+                throw new ArgumentError("Currency must be gold,silver or copper")
+            }
+            this.currency = currency
+
+            checkPositiveNumbers(value)
+            this.value = value
+
+            if(!Object.keys(RARITY_MAP).includes(rarity)){
+                throw new ArgumentError(`Rarity must be one of ${Object.keys(RARITY_MAP).join(", ")}`)
+            }
+            this.rarity = rarity
+            this.requirements = requirements
+
+            checkPositiveNumbers(stockValue)
+            this.stockValue = stockValue
+            this.modifier = modifier
+            this.description = description
+            //TBD validators for remaining attrs
+
+
+    }
+}
+
 const RARITY_MAP = {
     junk: "gray",
     common: "black",
@@ -72,7 +116,7 @@ const RARITY_MAP = {
 // Function to fetch items for a specific shop
 async function fetchItems(shop) {
     let querySnapshot;
-    const itemsList = ''
+    let itemsList = ''
 
     try {
         querySnapshot = await db.collection(shop).get()
@@ -107,18 +151,22 @@ async function fetchFunds() {
     let blacksmithFunds;
 
     try {
-        blacksmithFunds = await db.collection('merchant').doc('blacksmith').get().data()
+        blacksmithFunds = await db.collection('merchant').doc('blacksmith').get()
     }
     catch (err) {
         console.error("Error getting documennt: ", err)
         return null;
     }
 
+    blacksmithFunds = blacksmithFunds.data()
+
     const funds = convertToCopper(blacksmithFunds.gold, blacksmithFunds.silver, blacksmithFunds.copper);
 
     document
         .getElementById('blacksmith-funds')
-        .innerText = `Funds: ${blacksmithFunds.gold} Gold, ${blacksmithFunds.silver} Silver, ${dablacksmithFundsta.copper} Copper`;
+        .innerText = `Funds: ${blacksmithFunds.gold} Gold, ${blacksmithFunds.silver} Silver, ${blacksmithFunds.copper} Copper`;
+
+    return blacksmithFunds;
 }
 
 // Function to buy an item (check stock and update or delete item based on stock)
@@ -127,27 +175,29 @@ async function buyItem(itemId, shop, itemPrice, itemCurrency) {
     let funds;
 
     try {
-        itemRef = await db.collection(shop).doc(itemId).get().data();
+        itemRef = await db.collection(shop).doc(itemId).get()
     }
     catch (err) {
         console.log("Error getting item document: ", err)
     }
 
-    const currentStock = parseInt(itemRef.StockValue)
+    const currentStock = parseInt(itemRef.data().StockValue)
 
     try {
-        funds = await db.collection('merchant').doc('blacksmith').get().data()
+        funds = await db.collection('merchant').doc('blacksmith').get()
     }
     catch {
         console.log("Error getting blacksmith document: ", err)
     }
 
+    funds = funds.data()
+
     const fundsInCopper = convertToCopper(funds.gold, funds.silver, funds.copper)
-    const itemPriceInCopper = convertCurrencyToCopper(itemCurrency.toLowerCase, itemPrice)
+    const itemPriceInCopper = convertCurrencyToCopper(itemCurrency, itemPrice)
     const newFunds = convertFromCopper(fundsInCopper + itemPriceInCopper)
 
     if(currentStock > 1){
-        await itemRef.update({ StockValue: currentStock - 1})
+        await db.collection(shop).doc(itemId).update({ StockValue: currentStock - 1})
         await db.collection('merchant').doc('blacksmith').update(newFunds)
 
         console.log("Item stock and funds updated successfully")
@@ -155,7 +205,7 @@ async function buyItem(itemId, shop, itemPrice, itemCurrency) {
         fetchFunds()
     }
     else if (currentStock === 1){
-        await itemRef.delete()
+        await db.collection(shop).doc(itemId).delete()
         await db.collection('merchant').doc('blacksmith').update(newFunds)
 
         console.log("Item successfully deleted and funds updated!");
@@ -166,14 +216,23 @@ async function buyItem(itemId, shop, itemPrice, itemCurrency) {
 
 // Function to add a new item to the shop
 async function sellItem() {
-    const itemName = document.getElementById('item-name').value;
-    const itemValue = parseInt(document.getElementById('item-value').value);
-    const itemCurrency = document.getElementById('item-currency').value;
-    const itemRarity = document.getElementById('item-rarity').value;
-    const itemRequirements = document.getElementById('item-requirements').value;
-    const itemStockValue = parseInt(document.getElementById('item-stockValue').value);
-    const itemModifier = document.getElementById('item-modifier').value;
-    const itemDescription = document.getElementById('item-description').value;
+    let gameitem;
+    try {
+        gameItem = new GameItem(
+            document.getElementById('item-name').value,
+            parseInt(document.getElementById('item-value').value),
+            document.getElementById('item-currency').value,
+            document.getElementById('item-rarity').value,
+            document.getElementById('item-requirements').value,
+            parseInt(document.getElementById('item-stockValue').value),
+            document.getElementById('item-modifier').value,
+            document.getElementById('item-description').value
+        )
+    }
+    catch(err) {
+        console.error("Could not create GameItem")
+        return;
+    }
 
     try {
         funds = await fetchFunds()
@@ -187,7 +246,7 @@ async function sellItem() {
         return
     }
     const totalFundsInCopper = convertToCopper(funds.gold, funds.silver, funds.copper);
-    let itemValueInCopper = convertCurrencyToCopper(itemCurrency, itemValue)
+    let itemValueInCopper = convertCurrencyToCopper(gameItem.currency, gameItem.value)
 
     if (itemValueInCopper > totalFundsInCopper) {
         alert("The blacksmith can't afford to add this item!");
@@ -196,15 +255,15 @@ async function sellItem() {
         return;
     }
 
-    const docRef = await db.collection('blacksmith').add({
-        Name: itemName,
-        Value: itemValue,
-        Currency: itemCurrency,
-        Rarity: itemRarity,
-        Requirements: itemRequirements,
-        StockValue: itemStockValue,
-        Modifier: itemModifier,
-        Description: itemDescription
+    const docRef = await db.collection('blacksmithshop').add({
+        Name: gameItem.name,
+        Value: gameItem.value,
+        Currency: gameItem.currency,
+        Rarity: gameItem.rarity,
+        Requirements: gameItem.requirements,
+        StockValue: gameItem.stockValue,
+        Modifier: gameItem.modifier,
+        Description: gameItem.description
     })
 
     console.log("Doc written with ID: " , docRef.id)
