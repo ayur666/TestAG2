@@ -24,21 +24,17 @@
         <section id="blacksmith-description">
             <h2>Meet the Blacksmith</h2>
             <div id="blacksmith-info">
-                <h3>Garret Ironhand</h3>
+                <h3 id="blacksmith-name"></h3>
                 <img src="resources/Garret Ironhand.png" alt="Garret Ironhand" id="garret-ironhand-image">
-                <p><strong>Race:</strong> Dwarf</p>
-                <p><strong>Age:</strong> 150 years old</p>
-                <p><strong>Affiliation:</strong> Crafter's Guild</p>
-                <p>
-                    Garret Ironhand is a stout and burly dwarf with a long, bushy beard streaked with silver. His face is weathered from decades of working at the forge, and his eyes are sharp and blue, reflecting both wisdom and an indomitable spirit. He wears a leather apron over his simple tunic and trousers, and his strong, calloused hands are always busy with a hammer or tongs. Despite his gruff exterior, Garret has a warm heart and a soft spot for new adventurers, often offering them a few tips or words of encouragement.
-                </p>
+                <p><strong>Race:</strong> <span id="blacksmith-race"></span></p>
+                <p><strong>Age:</strong> <span id="blacksmith-age"></span></p>
+                <p><strong>Affiliation:</strong> <span id="blacksmith-affiliation"></span></p>
+                <p id="blacksmith-description-text"></p>
             </div>
             <div id="shop-info">
                 <h3>Ironhand Forge</h3>
                 <img src="resources/Ironhand Forge.jpg" alt="Ironhand Forge" id="ironhand-forge-image">
-                <p>
-                    Garret’s shop, Ironhand Forge, is a modest but well-organized establishment located in the heart of the bustling city. The exterior of the shop is constructed from sturdy stone with a large, welcoming wooden door adorned with a sign featuring a hammer and anvil. Inside, the shop is filled with the clatter of metal and the steady warmth of the forge. The walls are lined with racks of weapons and armor, while the center of the shop features a large, well-worn anvil and a roaring forge. There’s a display case showcasing a few finer pieces of gear, but the majority of the stock consists of practical and durable items suitable for new adventurers.
-                </p>
+                <p id="shop-description"></p>
             </div>
         </section>
 
@@ -83,6 +79,18 @@
                 e.preventDefault();
                 sellItem();
             });
+        });
+        document.addEventListener("DOMContentLoaded", async () => {
+            const npcId = "blacksmith1"; // Or dynamically set this value based on the context
+            const npc = await fetchNPC(npcId);
+            if (npc) {
+                document.getElementById('blacksmith-name').innerText = npc.name;
+                document.getElementById('blacksmith-age').innerText = `${npc.age} years old`;
+                document.getElementById('blacksmith-race').innerText = npc.race;
+                document.getElementById('blacksmith-affiliation').innerText = npc.affiliation;
+                document.getElementById('blacksmith-description-text').innerText = npc.description;
+                document.getElementById('shop-description').innerText = npc.shopDescription;
+            }
         });
     </script>
 </body>

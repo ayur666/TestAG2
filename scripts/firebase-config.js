@@ -104,6 +104,18 @@ class GameItem {
     }
 }
 
+class NPC {
+    constructor(name, age, race, affiliation, description, shopDescription) {
+        this.name = name;
+        this.age = age;
+        this.race = race;
+        this.affiliation = affiliation;
+        this.description = description;
+        this.shopDescription = shopDescription;
+    }
+}
+
+
 const RARITY_MAP = {
     junk: "gray",
     common: "black",
@@ -111,6 +123,32 @@ const RARITY_MAP = {
     rare: "blue",
     epic: "purple",
     mythic: "red"
+}
+
+// Function to fetch items for a specific NPC
+async function fetchNPC(npcId) {
+    let npcRef;
+    try {
+        npcRef = await db.collection('NPCData').doc(npcId).get();
+    } catch (err) {
+        console.error("Error fetching NPC data: ", err);
+        return null;
+    }
+
+    if (!npcRef.exists) {
+        console.error("No NPC found with the provided ID.");
+        return null;
+    }
+
+    const npcData = npcRef.data();
+    return new NPC(
+        npcData.Name,
+        npcData.Age,
+        npcData.Race,
+        npcData.Affiliation,
+        npcData.Description,
+        npcData.ShopDescription
+    );
 }
 
 // Function to fetch items for a specific shop
