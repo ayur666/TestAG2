@@ -32,34 +32,28 @@ const checkPositiveNumbers = (...args)  => {
 // Convert currency values to Copper
 const convertToCopper = (gold, silver, copper) => {
     checkPositiveNumbers(gold, silver, copper);
-
-    return (gold * 1000) + (silver * 100) + copper
+    return (gold * 10000) + (silver * 100) + copper;
 }
 
+// Convert any currency value to Copper
 const convertCurrencyToCopper = (curr, amount) => {
-    checkPositiveNumbers(amount)
-    if(!["gold","silver","copper"].includes(curr.toLowerCase())) {
-        throw new ArgumentError("Currency must be gold/silver/copper")
-
+    checkPositiveNumbers(amount);
+    switch(curr.toLowerCase()) {
+        case "gold": return amount * 10000;
+        case "silver": return amount * 100;
+        case "copper": return amount;
+        default: throw new ArgumentError("Currency must be gold, silver, or copper");
     }
-
-    switch(curr.toLowerCase()){
-        case "gold": return amount * 10_000
-        case "silver": return amount * 100
-        case "copper": return amount
-    }
-    
 }
 
 // Convert Copper value to Gold, Silver, Copper
 const convertFromCopper = (copper) => {
-    checkPositiveNumbers(copper)
-
+    checkPositiveNumbers(copper);
     return {
-        gold: Math.floor(copper / 10_000),
-        silver: Math.floor((copper % 10_000 / 100)),
+        gold: Math.floor(copper / 10000),
+        silver: Math.floor((copper % 10000) / 100),
         copper: copper % 100
-    }
+    };
 }
 
 
@@ -206,54 +200,37 @@ async function fetchFunds() {
     return blacksmithFunds;
 }
 
-// Function to buy an item (check stock and update or delete item based on stock)
+// Function to buy an item (corrected)
 async function buyItem(itemId, shop, itemPrice, itemCurrency) {
-    let itemRef = await db.collection(shop).doc(itemId).get;
-    let funds;
+    let itemRef = await db.collection(shop).doc(itemId).get();
+    let funds = await db.collection('merchant').doc('blacksmith').get();
+    
+    const currentStock = parseInt(itemRef.data().StockValue);
+    funds = funds.data();
+
+    const fundsInCopper = convertToCopper(funds.gold, funds.silver, funds.copper);
+    const itemPriceInCopper = convertCurrencyToCopper(itemCurrency, itemPrice);
+    const newFunds = convertFromCopper(fundsInCopper + itemPriceInCopper); // Funds should increase
 
     try {
-        itemRef = await db.collection(shop).doc(itemId).get()
-    }
-    catch (err) {
-        console.log("Error getting item document: ", err)
-    }
-
-    const currentStock = parseInt(itemRef.data().StockValue)
-
-    try {
-        funds = await db.collection('merchant').doc('blacksmith').get()
-    }
-    catch {
-        console.log("Error getting blacksmith document: ", err)
+        if (currentStock > 1) {
+            await db.collection(shop).doc(itemId).update({ StockValue: currentStock - 1 });
+        } else if (currentStock === 1) {
+            await db.collection(shop).doc(itemId).delete();
+        }
+        await db.collection('merchant').doc('blacksmith').update(newFunds);
+        console.log("Item stock and funds updated successfully");
+    } catch (err) {
+        console.error("Error updating item or funds: ", err);
     }
 
-    funds = funds.data()
-
-    const fundsInCopper = convertToCopper(funds.gold, funds.silver, funds.copper)
-    const itemPriceInCopper = convertCurrencyToCopper(itemCurrency, itemPrice)
-    const newFunds = convertFromCopper(fundsInCopper + itemPriceInCopper)
-
-    if(currentStock > 1){
-        await db.collection(shop).doc(itemId).update({ StockValue: currentStock - 1})
-        await db.collection('merchant').doc('blacksmith').update(newFunds)
-
-        console.log("Item stock and funds updated successfully")
-        fetchItems(shop)
-        fetchFunds()
-    }
-    else if (currentStock === 1){
-        await db.collection(shop).doc(itemId).delete()
-        await db.collection('merchant').doc('blacksmith').update(newFunds)
-
-        console.log("Item successfully deleted and funds updated!");
-        fetchItems(shop); // Refresh the item list
-        fetchFunds(); // Refresh the available funds display
-    }
+    fetchItems(shop); // Refresh the item list
+    fetchFunds(); // Refresh the available funds display
 }
 
-// Function to add a new item to the shop
+// Function to sell an item (corrected)
 async function sellItem() {
-    let gameitem;
+    let gameItem;
     try {
         gameItem = new GameItem(
             document.getElementById('item-name').value,
@@ -264,30 +241,20 @@ async function sellItem() {
             parseInt(document.getElementById('item-stockValue').value),
             document.getElementById('item-modifier').value,
             document.getElementById('item-description').value
-        )
-    }
-    catch(err) {
-        console.error("Could not create GameItem")
+        );
+    } catch (err) {
+        console.error("Could not create GameItem: ", err);
         return;
     }
 
-    try {
-        funds = await fetchFunds()
-    }
-    catch (err) {
-        console.error("Error fetching funds", err)
-        clearFormInputs();
-    }
+    let funds = await fetchFunds();
+    if (!funds) return;
 
-    if(!funds) {
-        return
-    }
     const totalFundsInCopper = convertToCopper(funds.gold, funds.silver, funds.copper);
-    let itemValueInCopper = convertCurrencyToCopper(gameItem.currency, gameItem.value)
+    const itemValueInCopper = convertCurrencyToCopper(gameItem.currency, gameItem.value);
 
     if (itemValueInCopper > totalFundsInCopper) {
         alert("The blacksmith can't afford to add this item!");
-        // Ensure form inputs are cleared even if the item cannot be added
         clearFormInputs();
         return;
     }
@@ -301,18 +268,24 @@ async function sellItem() {
         StockValue: gameItem.stockValue,
         Modifier: gameItem.modifier,
         Description: gameItem.description
-    })
+    });
 
-    console.log("Doc written with ID: " , docRef.id)
+    console.log("Doc written with ID: ", docRef.id);
 
-    const newTotalFundsInCopper = totalFundsInCopper - itemValueInCopper
-    
-    await db.collection('merchant').doc('blacksmith').update(convertFromCopper(newTotalFundsInCopper))
+    const newTotalFundsInCopper = totalFundsInCopper - itemValueInCopper; // Funds should decrease
+    await db.collection('merchant').doc('blacksmith').update(convertFromCopper(newTotalFundsInCopper));
 
-    fetchItems('blacksmithshop')
-    fetchFunds()
-    clearFormInputs()
+    fetchItems('blacksmithshop');
+    fetchFunds();
+    clearFormInputs();
 }
+
+// Dropdown restriction for currency in the form (update your HTML to include a dropdown)
+document.getElementById('item-currency').innerHTML = `
+    <option value="copper">Copper</option>
+    <option value="silver">Silver</option>
+    <option value="gold">Gold</option>
+`;
 
 // Function to clear form inputs
 function clearFormInputs() {
