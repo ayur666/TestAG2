@@ -353,6 +353,7 @@ async function sellItem() {
 
         // Refresh the UI and clear the form inputs
         fetchItems('blacksmithshop');
+        fetchFunds();
         clearFormInputs();
     } catch (err) {
         console.error("Error updating database: ", err);
@@ -361,9 +362,10 @@ async function sellItem() {
 
 // Function to convert total copper to gold, silver, and copper fields
 function convertToCurrencyFields(totalCopper) {
-    const gold = Math.floor(totalCopper / 1000000);  // 1 gold = 100 silver = 10,000 copper
-    totalCopper %= 1000000;
+    const gold = Math.floor(totalCopper / 10000);  // 1 gold = 100 silver = 10,000 copper
+    totalCopper %= 10000;
     const silver = Math.floor(totalCopper / 100); // 1 silver = 100 copper
+    totalCopper %= 100;
     const copper = totalCopper % 100;
 
     return {
