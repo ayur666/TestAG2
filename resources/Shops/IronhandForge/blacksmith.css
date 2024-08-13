@@ -164,7 +164,7 @@ article {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-#sell-item-form input {
+#sell-item-form input, select {
   font-size: 16px;
   padding: 10px;
   margin-bottom: 15px;
