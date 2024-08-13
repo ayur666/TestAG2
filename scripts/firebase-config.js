@@ -228,58 +228,6 @@ async function buyItem(itemId, shop, itemPrice, itemCurrency) {
     fetchFunds(); // Refresh the available funds display
 }
 
-// // Function to sell an item (corrected)
-// async function sellItem() {
-//     let gameItem;
-//     try {
-//         gameItem = new GameItem(
-//             document.getElementById('item-name').value,
-//             parseInt(document.getElementById('item-value').value),
-//             document.getElementById('item-currency').value,
-//             document.getElementById('item-rarity').value,
-//             document.getElementById('item-requirements').value,
-//             parseInt(document.getElementById('item-stockValue').value),
-//             document.getElementById('item-modifier').value,
-//             document.getElementById('item-description').value
-//         );
-//     } catch (err) {
-//         console.error("Could not create GameItem: ", err);
-//         return;
-//     }
-
-//     let funds = await fetchFunds();
-//     if (!funds) return;
-
-//     const totalFundsInCopper = convertToCopper(funds.gold, funds.silver, funds.copper);
-//     const itemValueInCopper = convertCurrencyToCopper(gameItem.currency, gameItem.value);
-
-//     if (itemValueInCopper > totalFundsInCopper) {
-//         alert("The blacksmith can't afford to add this item!");
-//         clearFormInputs();
-//         return;
-//     }
-
-//     const docRef = await db.collection('blacksmithshop').add({
-//         Name: gameItem.name,
-//         Value: gameItem.value,
-//         Currency: gameItem.currency,
-//         Rarity: gameItem.rarity,
-//         Requirements: gameItem.requirements,
-//         StockValue: gameItem.stockValue,
-//         Modifier: gameItem.modifier,
-//         Description: gameItem.description
-//     });
-
-//     console.log("Doc written with ID: ", docRef.id);
-
-//     const newTotalFundsInCopper = totalFundsInCopper - itemValueInCopper; // Funds should decrease
-//     await db.collection('merchant').doc('blacksmith').update(convertFromCopper(newTotalFundsInCopper));
-
-//     fetchItems('blacksmithshop');
-//     fetchFunds();
-//     clearFormInputs();
-// }
-
 async function sellItem() {
     let gameItem;
     try {
@@ -312,7 +260,7 @@ async function sellItem() {
 
     // Convert the fetched funds to copper
     const totalFundsInCopper = convertToCopper(funds.gold, funds.silver, funds.copper);
-    const itemValueInCopper = convertCurrencyToCopper(gameItem.currency, gameItem.value);
+    const itemValueInCopper = convertCurrencyToCopper(gameItem.currency, gameItem.value) * gameItem.stockValue;
 
     console.log(`Total funds in copper: ${totalFundsInCopper}`);
     console.log(`Item value in copper: ${itemValueInCopper}`);
