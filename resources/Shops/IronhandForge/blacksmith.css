@@ -197,3 +197,7 @@ article {
 #sell-item-form button:hover {
   background-color: #218838;
 }
+
+.placeholder {
+  color: gray;
+}
