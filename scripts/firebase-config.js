@@ -228,17 +228,68 @@ async function buyItem(itemId, shop, itemPrice, itemCurrency) {
     fetchFunds(); // Refresh the available funds display
 }
 
-// Function to sell an item (corrected)
+// // Function to sell an item (corrected)
+// async function sellItem() {
+//     let gameItem;
+//     try {
+//         gameItem = new GameItem(
+//             document.getElementById('item-name').value,
+//             parseInt(document.getElementById('item-value').value),
+//             document.getElementById('item-currency').value,
+//             document.getElementById('item-rarity').value,
+//             document.getElementById('item-requirements').value,
+//             parseInt(document.getElementById('item-stockValue').value),
+//             document.getElementById('item-modifier').value,
+//             document.getElementById('item-description').value
+//         );
+//     } catch (err) {
+//         console.error("Could not create GameItem: ", err);
+//         return;
+//     }
+
+//     let funds = await fetchFunds();
+//     if (!funds) return;
+
+//     const totalFundsInCopper = convertToCopper(funds.gold, funds.silver, funds.copper);
+//     const itemValueInCopper = convertCurrencyToCopper(gameItem.currency, gameItem.value);
+
+//     if (itemValueInCopper > totalFundsInCopper) {
+//         alert("The blacksmith can't afford to add this item!");
+//         clearFormInputs();
+//         return;
+//     }
+
+//     const docRef = await db.collection('blacksmithshop').add({
+//         Name: gameItem.name,
+//         Value: gameItem.value,
+//         Currency: gameItem.currency,
+//         Rarity: gameItem.rarity,
+//         Requirements: gameItem.requirements,
+//         StockValue: gameItem.stockValue,
+//         Modifier: gameItem.modifier,
+//         Description: gameItem.description
+//     });
+
+//     console.log("Doc written with ID: ", docRef.id);
+
+//     const newTotalFundsInCopper = totalFundsInCopper - itemValueInCopper; // Funds should decrease
+//     await db.collection('merchant').doc('blacksmith').update(convertFromCopper(newTotalFundsInCopper));
+
+//     fetchItems('blacksmithshop');
+//     fetchFunds();
+//     clearFormInputs();
+// }
+
 async function sellItem() {
     let gameItem;
     try {
         gameItem = new GameItem(
             document.getElementById('item-name').value,
-            parseInt(document.getElementById('item-value').value),
+            parseInt(document.getElementById('item-value').value, 10),
             document.getElementById('item-currency').value,
             document.getElementById('item-rarity').value,
             document.getElementById('item-requirements').value,
-            parseInt(document.getElementById('item-stockValue').value),
+            parseInt(document.getElementById('item-stockValue').value, 10),
             document.getElementById('item-modifier').value,
             document.getElementById('item-description').value
         );
@@ -247,38 +298,82 @@ async function sellItem() {
         return;
     }
 
-    let funds = await fetchFunds();
-    if (!funds) return;
+    let funds;
+    try {
+        funds = await fetchFunds();
+        if (!funds) {
+            console.error("Failed to fetch funds.");
+            return;
+        }
+    } catch (err) {
+        console.error("Error fetching funds: ", err);
+        return;
+    }
 
+    // Convert the fetched funds to copper
     const totalFundsInCopper = convertToCopper(funds.gold, funds.silver, funds.copper);
     const itemValueInCopper = convertCurrencyToCopper(gameItem.currency, gameItem.value);
 
+    console.log(`Total funds in copper: ${totalFundsInCopper}`);
+    console.log(`Item value in copper: ${itemValueInCopper}`);
+
+    // Check if the merchant can afford the item
     if (itemValueInCopper > totalFundsInCopper) {
         alert("The blacksmith can't afford to add this item!");
         clearFormInputs();
         return;
     }
 
-    const docRef = await db.collection('blacksmithshop').add({
-        Name: gameItem.name,
-        Value: gameItem.value,
-        Currency: gameItem.currency,
-        Rarity: gameItem.rarity,
-        Requirements: gameItem.requirements,
-        StockValue: gameItem.stockValue,
-        Modifier: gameItem.modifier,
-        Description: gameItem.description
-    });
+    try {
+        // Add the new item to the 'blacksmithshop' collection
+        const docRef = await db.collection('blacksmithshop').add({
+            Name: gameItem.name,
+            Value: gameItem.value,
+            Currency: gameItem.currency,
+            Rarity: gameItem.rarity,
+            Requirements: gameItem.requirements,
+            StockValue: gameItem.stockValue,
+            Modifier: gameItem.modifier,
+            Description: gameItem.description
+        });
 
-    console.log("Doc written with ID: ", docRef.id);
+        console.log("Doc written with ID: ", docRef.id);
 
-    const newTotalFundsInCopper = totalFundsInCopper - itemValueInCopper; // Funds should decrease
-    await db.collection('merchant').doc('blacksmith').update(convertFromCopper(newTotalFundsInCopper));
+        // Calculate the new total funds
+        const newTotalFundsInCopper = totalFundsInCopper - itemValueInCopper;
+        console.log(`New total funds in copper: ${newTotalFundsInCopper}`);
 
-    fetchItems('blacksmithshop');
-    fetchFunds();
-    clearFormInputs();
+        // Convert new total funds in copper to individual currency fields
+        const updatedFunds = convertToCurrencyFields(newTotalFundsInCopper);
+
+        // Update the 'blacksmith' document with the new funds
+        await db.collection('merchant').doc('blacksmith').update(updatedFunds);
+
+        console.log("Merchant's funds updated successfully.");
+
+        // Refresh the UI and clear the form inputs
+        fetchItems('blacksmithshop');
+        clearFormInputs();
+    } catch (err) {
+        console.error("Error updating database: ", err);
+    }
 }
+
+// Function to convert total copper to gold, silver, and copper fields
+function convertToCurrencyFields(totalCopper) {
+    const gold = Math.floor(totalCopper / 1000000);  // 1 gold = 100 silver = 10,000 copper
+    totalCopper %= 1000000;
+    const silver = Math.floor(totalCopper / 100); // 1 silver = 100 copper
+    const copper = totalCopper % 100;
+
+    return {
+        gold: gold,
+        silver: silver,
+        copper: copper
+    };
+}
+
+
 
 // Function to clear form inputs
 function clearFormInputs() {
