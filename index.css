@@ -21,6 +21,11 @@ header{
   z-index: 1000; /* Ensure header stays above other content */
 }
 
+h3 {
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+}
+
 .content {
   flex: 1;
 }
