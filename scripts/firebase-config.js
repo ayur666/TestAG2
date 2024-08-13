@@ -168,15 +168,15 @@ async function fetchItems(shop) {
         const rarityColor = RARITY_MAP[data.Rarity] || "black";
 
         itemsList += `
-            <li style="padding: 10px; border-bottom: 1px solid #ddd; margin-bottom: 10px;">
-                <span style="color: ${rarityColor};">${data.Name}</span> - ${data.Value} ${data.Currency}
-                <div>
-                    <p>Requirements: ${data.Requirements}</p>
-                    <p>Description: ${data.Description}</p>
-                    <p>Modifier: ${data.Modifier}</p>
-                    <p>Stock: ${data.StockValue}</p>
+            <li class="item-tile">
+                <span class="item-name" style="color: ${rarityColor};">${data.Name}</span> - ${data.Value} ${data.Currency}
+                <div class="item-details">
+                    <p><strong>Requirements:</strong> ${data.Requirements}</p>
+                    <p><strong>Description:</strong> ${data.Description}</p>
+                    <p><strong>Modifier:</strong> ${data.Modifier}</p>
+                    <p><strong>Stock:</strong> ${data.StockValue}</p>
                 </div>
-                <button onclick="buyItem('${doc.id}', '${shop}', ${data.Value}, '${data.Currency}')">Buy</button>
+                <button class="buy-button" onclick="buyItem('${doc.id}', '${shop}', ${data.Value}, '${data.Currency}')">Buy</button>
             </li>
         `
         
