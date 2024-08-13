@@ -280,13 +280,6 @@ async function sellItem() {
     clearFormInputs();
 }
 
-// Dropdown restriction for currency in the form (update your HTML to include a dropdown)
-document.getElementById('item-currency').innerHTML = `
-    <option value="copper">Copper</option>
-    <option value="silver">Silver</option>
-    <option value="gold">Gold</option>
-`;
-
 // Function to clear form inputs
 function clearFormInputs() {
     const inputs = [

@@ -55,8 +55,22 @@
             <form id="sell-item-form">
                 <input type="text" id="item-name" placeholder="Item Name" required>
                 <input type="number" id="item-value" placeholder="Item Value" required>
-                <input type="text" id="item-currency" placeholder="Currency" required>
-                <input type="text" id="item-rarity" placeholder="Rarity" required>
+                <!-- Dropdown for currency -->
+                <select id="item-currency" required>
+                    <option value="" disabled selected>Select Currency</option>
+                    <option value="copper">copper</option>
+                    <option value="silver">silver</option>
+                    <option value="gold">gold</option>
+                </select>   
+                <select id="item-rarity" required>
+                    <option value="" disabled selected>Select Rarity</option>
+                    <option value="junk" style="color: gray;">junk</option>
+                    <option value="common" style="color: black;">common</option>
+                    <option value="uncommon" style="color: green;">uncommon</option>
+                    <option value="rare" style="color: blue;">rare</option>
+                    <option value="epic" style="color: purple;">epic</option>
+                    <option value="mythic" style="color: red;">mythic</option>
+                </select>
                 <input type="text" id="item-requirements" placeholder="Requirements" required>
                 <input type="text" id="item-stockValue" placeholder="Stock Value" required>
                 <input type="text" id="item-modifier" placeholder="Modifier" required>
