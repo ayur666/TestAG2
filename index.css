@@ -19,6 +19,7 @@ header{
   text-align: center; /* Center-align text and image */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for better visibility */
   z-index: 1000; /* Ensure header stays above other content */
+  height: 20%;
 }
 
 h3 {
