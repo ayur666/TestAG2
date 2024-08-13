@@ -179,7 +179,6 @@ async function fetchItems(shop) {
                 <button class="buy-button" onclick="buyItem('${doc.id}', '${shop}', ${data.Value}, '${data.Currency}')">Buy</button>
             </li>
         `
-        
         document.getElementById('items-list').innerHTML = itemsList;
     })
 }
