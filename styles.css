@@ -56,33 +56,6 @@ article {
   background-color: #fff;
 }
 
-#blacksmith-description {
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-#blacksmith-info,
-#shop-info {
-  margin-bottom: 15px;
-}
-
-#blacksmith-info h3,
-#shop-info h3 {
-  color: #555;
-}
-
-#blacksmith-info p,
-#shop-info p {
-  font-size: 16px;
-  line-height: 1.5;
-}
-
-#blacksmith-info p strong,
-#shop-info p strong {
-  font-weight: bold;
-}
 
 h2 {
   padding-bottom: 10px;
@@ -98,28 +71,6 @@ header {
   text-align: center; /* Center-align text and image */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for better visibility */
   z-index: 1000; /* Ensure header stays above other content */
-}
-
-/* Adjust image size relative to the header font size */
-#guild-image {
-  width: 5%; /* Adjust width to be 5% of the header text */
-  height: 5%; /* Maintain aspect ratio */
-  max-width: 300px; /* Optional: set a maximum width */
-  margin-bottom: 10px; /* Space between image and text */
-}
-
-#garret-ironhand-image {
-  width: 10%;
-  height: 10%; /* Maintain aspect ratio */
-  max-width: 300px; /* Optional: set a maximum width */
-  margin-bottom: 10px; /* Space between image and text */
-}
-
-#ironhand-forge-image {
-  width: 25%;
-  height: 20%; /* Maintain aspect ratio */
-  max-width: 300px; /* Optional: set a maximum width */
-  margin-bottom: 10px; /* Space between image and text */
 }
 
 /* Adjust heading styles */
