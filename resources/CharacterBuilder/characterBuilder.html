@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Builder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>RPG Skill Builder</h1>
+        <div class="skill-form">
+            <label for="skill-name">Skill Name:</label>
+            <input type="text" id="skill-name" placeholder="Enter skill name">
+
+            <label for="skill-description">Skill Description:</label>
+            <textarea id="skill-description" rows="3" placeholder="Enter skill description"></textarea>
+
+            <label for="resource-type">Resource Type:</label>
+            <select id="resource-type">
+                <option value="Willpower">Willpower</option>
+                <option value="Mana">Mana</option>
+            </select>
+
+            <div id="modifiers">
+                <h3>Modifiers</h3>
+                <div id="modifier-list"></div>
+                <button id="add-modifier">+ Add Modifier</button>
+            </div>
+        </div>
+
+        <div class="skill-summary">
+            <h2>Skill Summary</h2>
+            <div id="skill-output">
+                <p><strong>Name:</strong> <span id="output-name"></span></p>
+                <p><strong>Description:</strong> <span id="output-description"></span></p>
+                <p><strong>Resource Type:</strong> <span id="output-resource"></span></p>
+                <p><strong>Modifiers:</strong> <span id="output-modifiers"></span></p>
+                <p><strong>Total Value:</strong> <span id="output-value">0</span></p>
+            </div>
+        </div>
+    </div>
+    <script src="characterBuilder.js"></script>
+</body>
+</html>

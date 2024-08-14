@@ -65,3 +65,23 @@ h3 {
 .shop-item a:hover img {
   transform: scale(1.1);
 }
+
+.button-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.character-builder-button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.character-builder-button:hover {
+  background-color: #0056b3;
+}
