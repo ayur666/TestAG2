@@ -16,6 +16,16 @@
             <label for="skill-description">Skill Description:</label>
             <textarea id="skill-description" rows="3" placeholder="Enter skill description"></textarea>
 
+            <label for="attribute-type">Main Attribute:</label>
+            <select id="attribute-type">
+                <option value="Strength">Strength</option>
+                <option value="Agility">Agility</option>
+                <option value="Intelligence">Intelligence</option>
+                <option value="Magik">Magik</option>
+                <option value="Stamina">Stamina</option>
+                <option value="Perception">Perception</option>
+            </select>
+
             <label for="resource-type">Resource Type:</label>
             <select id="resource-type">
                 <option value="Willpower">Willpower</option>
@@ -34,12 +44,12 @@
             <div id="skill-output">
                 <p><strong>Name:</strong> <span id="output-name"></span></p>
                 <p><strong>Description:</strong> <span id="output-description"></span></p>
+                <p><strong>Main Attribute:</strong> <span id="output-attribute"></span></p>
                 <p><strong>Resource Type:</strong> <span id="output-resource"></span></p>
                 <p><strong>Modifiers:</strong> <span id="output-modifiers"></span></p>
                 <p><strong>Total Value:</strong> <span id="output-value">0</span></p>
             </div>
         </div>
-    </div>
     <script src="characterBuilder.js"></script>
 </body>
 </html>

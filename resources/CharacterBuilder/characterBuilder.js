@@ -3,9 +3,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const modifierList = document.getElementById('modifier-list');
     const skillNameInput = document.getElementById('skill-name');
     const skillDescriptionInput = document.getElementById('skill-description');
+    const attributeTypeSelect = document.getElementById('attribute-type');
     const resourceTypeSelect = document.getElementById('resource-type');
     const outputName = document.getElementById('output-name');
     const outputDescription = document.getElementById('output-description');
+    const outputAttribute = document.getElementById('output-attribute');
     const outputResource = document.getElementById('output-resource');
     const outputModifiers = document.getElementById('output-modifiers');
     const outputValue = document.getElementById('output-value');
@@ -46,10 +48,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         modifierList.appendChild(modifierDiv);
 
-        const modifierObject = { modifierSelect, pointsInput };
+        const modifierObject = { modifierSelect, pointsInput, extra: null };
         modifiers.push(modifierObject);
 
         pointsInput.addEventListener('input', updateSkill);
+        modifierSelect.addEventListener('change', function() {
+            handleExtraOptions(modifierObject, modifierDiv);
+            updateSkill();
+        });
         removeBtn.addEventListener('click', function() {
             const index = modifiers.indexOf(modifierObject);
             if (index !== -1) {
@@ -64,15 +70,91 @@ document.addEventListener('DOMContentLoaded', function() {
 
     skillNameInput.addEventListener('input', updateSkill);
     skillDescriptionInput.addEventListener('input', updateSkill);
+    attributeTypeSelect.addEventListener('change', updateSkill);
     resourceTypeSelect.addEventListener('change', updateSkill);
+
+    function handleExtraOptions(modifierObject, modifierDiv) {
+        const selectedModifier = modifierObject.modifierSelect.value;
+
+        if (modifierObject.extra) {
+            modifierDiv.removeChild(modifierObject.extra);
+            modifierObject.extra = null;
+        }
+
+        if (selectedModifier === 'Damage') {
+            const extraDiv = document.createElement('div');
+            extraDiv.className = 'modifier-extra';
+
+            const damageTypeSelect = document.createElement('select');
+            const damageTypes = ['Blunt', 'Slashing', 'Piercing', 'Nature', 'Light', 'Shadow', 'Fire', 'Water', 'Air', 'Earth'];
+
+            damageTypes.forEach(type => {
+                const opt = document.createElement('option');
+                opt.value = type;
+                opt.textContent = type;
+                damageTypeSelect.appendChild(opt);
+            });
+
+            const damageDeliverySelect = document.createElement('select');
+            const deliveryTypes = ['Direct', 'Over Time'];
+
+            deliveryTypes.forEach(type => {
+                const opt = document.createElement('option');
+                opt.value = type;
+                opt.textContent = type;
+                damageDeliverySelect.appendChild(opt);
+            });
+
+            const damageDescription = document.createElement('textarea');
+            damageDescription.placeholder = 'Describe the damage...';
+
+            extraDiv.innerHTML = `<label>Damage Type:</label>`;
+            extraDiv.appendChild(damageTypeSelect);
+            extraDiv.innerHTML += `<label>Delivery Method:</label>`;
+            extraDiv.appendChild(damageDeliverySelect);
+            extraDiv.innerHTML += `<label>Damage Description:</label>`;
+            extraDiv.appendChild(damageDescription);
+
+            modifierDiv.appendChild(extraDiv);
+            modifierObject.extra = extraDiv;
+        } else if (selectedModifier === 'Extra Effect') {
+            const extraDiv = document.createElement('div');
+            extraDiv.className = 'modifier-extra';
+
+            const effectTypeSelect = document.createElement('select');
+            const effectTypes = ['Beneficial', 'Negative', 'Situational'];
+
+            effectTypes.forEach(type => {
+                const opt = document.createElement('option');
+                opt.value = type;
+                opt.textContent = type;
+                effectTypeSelect.appendChild(opt);
+            });
+
+            const effectDescription = document.createElement('textarea');
+            effectDescription.placeholder = 'Describe the effect...';
+
+            extraDiv.innerHTML = `<label>Effect Type:</label>`;
+            extraDiv.appendChild(effectTypeSelect);
+            extraDiv.innerHTML += `<label>Effect Description:</label>`;
+            extraDiv.appendChild(effectDescription);
+
+            modifierDiv.appendChild(extraDiv);
+            modifierObject.extra = extraDiv;
+        }
+
+        updateSkill();
+    }
 
     function updateSkill() {
         const skillName = skillNameInput.value;
         const skillDescription = skillDescriptionInput.value;
+        const attributeType = attributeTypeSelect.value;
         const resourceType = resourceTypeSelect.value;
 
         outputName.textContent = skillName;
         outputDescription.textContent = skillDescription;
+        outputAttribute.textContent = attributeType;
         outputResource.textContent = resourceType;
 
         let modifiersText = '';
@@ -81,7 +163,22 @@ document.addEventListener('DOMContentLoaded', function() {
         modifiers.forEach(mod => {
             const modifierName = mod.modifierSelect.value;
             const points = parseInt(mod.pointsInput.value, 10) || 0;
-            modifiersText += `${modifierName}: ${points} points<br>`;
+            let modifierDescription = `${modifierName}: ${points}`;
+
+            if (modifierName === 'Area' || modifierName === 'Range') {
+                modifierDescription += ` meters`;
+            } else if (modifierName === 'Damage' && mod.extra) {
+                const damageType = mod.extra.querySelector('select').value;
+                const deliveryType = mod.extra.querySelectorAll('select')[1].value;
+                const description = mod.extra.querySelector('textarea').value;
+                modifierDescription += ` (${damageType}, ${deliveryType}): ${description}`;
+            } else if (modifierName === 'Extra Effect' && mod.extra) {
+                const effectType = mod.extra.querySelector('select').value;
+                const description = mod.extra.querySelector('textarea').value;
+                modifierDescription += ` (${effectType}): ${description}`;
+            }
+
+            modifiersText += modifierDescription + '<br>';
             totalValue += points;
         });
 
