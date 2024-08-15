@@ -8,9 +8,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const outputName = document.getElementById('output-name');
     const outputDescription = document.getElementById('output-description');
     const outputAttribute = document.getElementById('output-attribute');
+    const outputAttributeCost = document.getElementById('output-attribute-cost');
     const outputResource = document.getElementById('output-resource');
+    const outputResourceCost = document.getElementById('output-resource-cost');
     const outputModifiers = document.getElementById('output-modifiers');
     const outputValue = document.getElementById('output-value');
+    const outputValueCost = document.getElementById('output-value-cost');
 
     let modifiers = [];
     let totalValue = 0;
@@ -155,7 +158,9 @@ document.addEventListener('DOMContentLoaded', function() {
         outputName.textContent = skillName;
         outputDescription.textContent = skillDescription;
         outputAttribute.textContent = attributeType;
+        outputAttributeCost.textContent = attributeType;
         outputResource.textContent = resourceType;
+        outputResourceCost.textContent = resourceType;
 
         let modifiersText = '';
         totalValue = 0;
@@ -184,5 +189,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         outputModifiers.innerHTML = modifiersText;
         outputValue.textContent = totalValue;
+        outputValueCost.textContent = totalValue;
     }
 });
