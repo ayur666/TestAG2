@@ -19,6 +19,7 @@ class ArgumentError extends Error {
 firebase.initializeApp(firebaseConfig);
 
 var db = firebase.firestore();
+export { db };
 
 // Type safety in spaghetti language
 const checkPositiveNumbers = (...args)  => {
