@@ -8,8 +8,10 @@
 </head>
 <body>
     <div class="container">
-        <h1>RPG Skill Builder</h1>
+        <h1>Skill Builder</h1>
         <div class="skill-form">
+            <label for="author-name">Author Name:</label>
+            <input type="text" id="author-name" placeholder="Enter your name">
             <label for="skill-name">Skill Name:</label>
             <input type="text" id="skill-name" placeholder="Enter skill name">
 
@@ -50,6 +52,15 @@
                 <p><strong>Skillpoints required:</strong> <span id="output-value">0</span></p>
                 <p><strong>Resource cost:</strong> <span id="output-value-cost">0</span> + <span id="output-attribute-cost"></span> <span id="output-resource-cost"></span></p>
             </div>
+            <button id="save-to-library">Save to Library</button>
+            <button id="delete-from-library">Delete from Library</button>
+        </div>
+        <div class="skill-library">
+            <h2>Skill Library</h2>
+            <input type="text" id="search" placeholder="Search by name or author">
+            <button id="search-button">Search</button>
+            <div id="skills-list"></div>
+            <button id="load-skill">Load Skill</button>
         </div>
     <script src="characterBuilder.js"></script>
 </body>
