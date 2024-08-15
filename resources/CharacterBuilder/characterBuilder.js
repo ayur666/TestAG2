@@ -180,6 +180,11 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (modifierName === 'Extra Effect' && mod.extra) {
                 const effectType = mod.extra.querySelector('select').value;
                 const description = mod.extra.querySelector('textarea').value;
+                if(effectType === 'Negative') {
+                    modifierDescription = 'Saving throw difficulty increased by ' + modifierDescription;
+                } else if(effectType === 'Positive') {
+                    modifierDescription = 'Value increased by ' + modifierDescription;
+                }
                 modifierDescription += ` (${effectType}): ${description}`;
             }
 
