@@ -1,5 +1,3 @@
-import { db } from './firebase-config.js';
-
 document.addEventListener('DOMContentLoaded', function() {
 
     const skillNameInput = document.getElementById('skill-name');
