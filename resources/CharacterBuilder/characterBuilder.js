@@ -1,3 +1,17 @@
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyA2h0Y1Km5nWDGCNIBRUChtH481Q-lt8dw", //process.env.FIREBASE_API_KEY,
+    authDomain: "adventurer-s-guild.firebaseapp.com", // process.env.FIREBASE_AUTH_DOMAIN,
+    projectId: "adventurer-s-guild", // process.env.FIREBASE_PROJECT_ID,
+    storageBucket: "adventurer-s-guild.appspot.com", //process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: "937158092711", //process.env.FIREBASE_MESSAGING_SENDER_ID,
+    appId: "1:937158092711:web:a03bee6d47f0534fd9f882.env", //process.env.FIREBASE_APP_ID,
+};
+firebase.initializeApp(firebaseConfig);
+
+var db = firebase.firestore();
+
 document.addEventListener('DOMContentLoaded', function() {
 
     const skillNameInput = document.getElementById('skill-name');
