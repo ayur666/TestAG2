@@ -181,9 +181,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const effectType = mod.extra.querySelector('select').value;
                 const description = mod.extra.querySelector('textarea').value;
                 if(effectType === 'Negative') {
-                    modifierDescription = 'Saving throw difficulty increased by ' + modifierDescription;
-                } else if(effectType === 'Positive') {
-                    modifierDescription = 'Value increased by ' + modifierDescription;
+                    modifierDescription = `${modifierName}: Saving throw difficulty increased by ${points}` ;
+                } else if(effectType === 'Beneficial') {
+                    modifierDescription = `${modifierName}: Value increased by ${points}`;
                 }
                 modifierDescription += ` (${effectType}): ${description}`;
             }
