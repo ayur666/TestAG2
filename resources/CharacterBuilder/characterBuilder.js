@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const damageDeliverySelect = document.createElement('select');
-            const deliveryTypes = ['Direct', 'Over Time'];
+            const deliveryTypes = ['Direct', 'Over Time', 'Delayed'];
 
             deliveryTypes.forEach(type => {
                 const opt = document.createElement('option');
