@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const pointsInput = document.createElement('input');
         const removeBtn = document.createElement('button');
 
-        const modifierOptions = ['Number of Targets', 'Range', 'Area', 'Damage', 'Extra Effect'];
+        const modifierOptions = ['Number of Targets', 'Range', 'Area', 'Damage', 'Extra Effect', 'Number of Objects Created'];
 
         modifierOptions.forEach(option => {
             const opt = document.createElement('option');
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
             extraDiv.className = 'modifier-extra';
 
             const damageTypeSelect = document.createElement('select');
-            const damageTypes = ['Blunt', 'Slashing', 'Piercing', 'Nature', 'Light', 'Shadow', 'Fire', 'Water', 'Air', 'Earth'];
+            const damageTypes = ['Blunt', 'Slashing', 'Piercing', 'Nature', 'Light', 'Shadow', 'Fire', 'Water', 'Air', 'Earth', 'Variable'];
 
             damageTypes.forEach(type => {
                 const opt = document.createElement('option');
