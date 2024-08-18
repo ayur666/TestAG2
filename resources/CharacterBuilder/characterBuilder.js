@@ -3,10 +3,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const modifierList = document.getElementById('modifier-list');
     const skillNameInput = document.getElementById('skill-name');
     const skillDescriptionInput = document.getElementById('skill-description');
+    const skillFantasyInput = document.getElementById('skill-fantasy');
     const attributeTypeSelect = document.getElementById('attribute-type');
     const resourceTypeSelect = document.getElementById('resource-type');
+    const costTypeSelect = document.getElementById('cost-type');
     const outputName = document.getElementById('output-name');
     const outputDescription = document.getElementById('output-description');
+    const outputFantasy = document.getElementById('output-fantasy');
     const outputAttribute = document.getElementById('output-attribute');
     const outputAttributeCost = document.getElementById('output-attribute-cost');
     const outputResource = document.getElementById('output-resource');
@@ -14,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const outputModifiers = document.getElementById('output-modifiers');
     const outputValue = document.getElementById('output-value');
     const outputValueCost = document.getElementById('output-value-cost');
+    const outputResourceCostType = document.getElementById('output-resource-cost-type');
 
     let modifiers = [];
     let totalValue = 0;
@@ -73,8 +77,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     skillNameInput.addEventListener('input', updateSkill);
     skillDescriptionInput.addEventListener('input', updateSkill);
+    skillFantasyInput.addEventListener('input', updateSkill);
     attributeTypeSelect.addEventListener('change', updateSkill);
     resourceTypeSelect.addEventListener('change', updateSkill);
+    costTypeSelect.addEventListener('change', updateSkill);
 
     function handleExtraOptions(modifierObject, modifierDiv) {
         const selectedModifier = modifierObject.modifierSelect.value;
@@ -152,15 +158,19 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateSkill() {
         const skillName = skillNameInput.value;
         const skillDescription = skillDescriptionInput.value;
+        const skillFantasy = skillFantasyInput.value;
         const attributeType = attributeTypeSelect.value;
         const resourceType = resourceTypeSelect.value;
+        const costType = costTypeSelect.value;
 
         outputName.textContent = skillName;
         outputDescription.textContent = skillDescription;
+        outputFantasy.textContent = skillFantasy;
         outputAttribute.textContent = attributeType;
         outputAttributeCost.textContent = attributeType;
         outputResource.textContent = resourceType;
         outputResourceCost.textContent = resourceType;
+        outputResourceCostType.textContent = costType;
 
         let modifiersText = '';
         totalValue = 0;
