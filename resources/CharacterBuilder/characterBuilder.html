@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Builder</title>
+    <link rel="stylesheet" href="characterBuilder.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Skill Builder</h1>
+        <div class="skill-form">
+            <label for="skill-name">Skill Name:</label>
+            <input type="text" id="skill-name" placeholder="Enter skill name">
+
+            <label for="skill-description">Skill Description:</label>
+            <textarea id="skill-description" rows="3" placeholder="Enter skill description"></textarea>
+            <label for="skill-description">Skill Fantasy:</label>
+            <textarea id="skill-fantasy" rows="3" placeholder="Enter skill fantasy"></textarea>
+
+            <label for="attribute-type">Main Attribute:</label>
+            <select id="attribute-type">
+                <option value="Strength">Strength</option>
+                <option value="Agility">Agility</option>
+                <option value="Intelligence">Intelligence</option>
+                <option value="Magik">Magik</option>
+                <option value="Stamina">Stamina</option>
+                <option value="Perception">Perception</option>
+            </select>
+
+            <label for="resource-type">Resource Type:</label>
+            <select id="resource-type">
+                <option value="Willpower">Willpower</option>
+                <option value="Mana">Mana</option>
+            </select>
+
+            <label for="cost-type">Cost Type:</label>
+            <select id="cost-type">
+                <option value="Direct">Direct</option>
+                <option value="Upkeep">Upkeep</option>
+            </select>
+
+            <div id="modifiers">
+                <h3>Modifiers</h3>
+                <div id="modifier-list"></div>
+                <button id="add-modifier">+ Add Modifier</button>
+            </div>
+        </div>
+
+        <div class="skill-summary">
+            <h2>Skill Summary</h2>
+            <div id="skill-output">
+                <p><strong>Name:</strong> <span id="output-name"></span></p>
+                <p><strong>Skill Description:</strong> <span id="output-description"></span></p>
+                <p><strong>Skill Fantasy:</strong> <span id="output-fantasy"></span></p>
+                <p><strong>Main Attribute:</strong> <span id="output-attribute"></span></p>
+                <p><strong>Resource Type:</strong> <span id="output-resource"></span></p>
+                <p><strong>Resource Cost Type:</strong> <span id="output-resource-cost-type"></span></p>
+                <p><strong>Modifiers:</strong> <span id="output-modifiers"></span></p>
+                <p><strong>Skillpoints required:</strong> <span id="output-value">0</span></p>
+                <p><strong>Resource cost:</strong> <span id="output-value-cost">0</span> + <span id="output-attribute-cost"></span> <span id="output-resource-cost"></span></p>
+            </div>
+        </div>
+    <script src="characterBuilder.js"></script>
+</body>
+</html>

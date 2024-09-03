@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blacksmith</title>
+    <link rel="stylesheet" href="blacksmith.css">
+    
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <!-- Firebase Firestore SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    
+    <!-- Your Firebase configuration -->
+    <script src="../../../scripts/firebase-config.js" defer></script>
+</head>
+<body>
+    <header>
+        <h2>Blacksmith - Ironhand Forge</h2>
+        <h3>Crafter's Guild</h3>
+        <img src="../../Crests/Crafter's%20Guild.png" alt="Crafter's Guild" id="guild-image">
+    </header>
+    <main>
+        <section id="blacksmith-description">
+            <div id="blacksmith-info">
+                <h3 id="blacksmith-name"></h3>
+                <img src="../..//NPCS/Garret%20Ironhand.png" alt="Garret Ironhand" id="garret-ironhand-image">
+                <p><strong>Race:</strong> <span id="blacksmith-race"></span></p>
+                <p><strong>Age:</strong> <span id="blacksmith-age"></span></p>
+                <p><strong>Affiliation:</strong> <span id="blacksmith-affiliation"></span></p>
+                <p id="blacksmith-description-text"></p>
+            </div>
+            <div id="shop-info">
+                <h3>Ironhand Forge</h3>
+                <img src="Ironhand%20Forge.jpg" alt="Ironhand Forge" id="ironhand-forge-image">
+                <p id="shop-description"></p>
+            </div>
+        </section>
+
+        <section id="items">
+            <h2>Items for Sale</h2>
+            <ul id="items-list">
+                <!-- Items will be dynamically inserted here -->
+            </ul>
+        </section>
+
+        <!-- Section for Available Funds -->
+        <section id="funds">
+            <h2>Available Funds</h2>
+            <p id="blacksmith-funds"></p> <!-- Placeholder for available funds -->
+        </section>
+
+        <section id="sell-item">
+            <h2>Sell an Item</h2>
+            <form id="sell-item-form">
+                <input type="text" id="item-name" placeholder="Item Name" required>
+                <input type="number" id="item-value" placeholder="Item Value" required>
+                <!-- Dropdown for currency -->
+                <select id="item-currency" required>
+                    <option value="" disabled selected class="placeholder">Select Currency</option>
+                    <option value="copper">copper</option>
+                    <option value="silver">silver</option>
+                    <option value="gold">gold</option>
+                </select>   
+                <select id="item-rarity" required>
+                    <option value="" disabled selected class="placeholder">Select Rarity</option>
+                    <option value="junk" style="color: gray;">junk</option>
+                    <option value="common" style="color: black;">common</option>
+                    <option value="uncommon" style="color: green;">uncommon</option>
+                    <option value="rare" style="color: blue;">rare</option>
+                    <option value="epic" style="color: purple;">epic</option>
+                    <option value="mythic" style="color: red;">mythic</option>
+                </select>
+                <input type="text" id="item-requirements" placeholder="Requirements" required>
+                <input type="text" id="item-stockValue" placeholder="Stock Value" required>
+                <input type="text" id="item-modifier" placeholder="Modifier" required>
+                <input type="text" id="item-description" placeholder="Description" required>
+                <button type="submit">Sell</button>
+            </form>            
+        </section>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchItems('blacksmithshop');
+            fetchFunds();
+            document.getElementById('sell-item-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                sellItem();
+            });
+        });
+        document.addEventListener("DOMContentLoaded", async () => {
+            const npcId = "blacksmith1"; // Or dynamically set this value based on the context
+            const npc = await fetchNPC(npcId);
+            if (npc) {
+                document.getElementById('blacksmith-name').innerText = npc.name;
+                document.getElementById('blacksmith-age').innerText = `${npc.age} years old`;
+                document.getElementById('blacksmith-race').innerText = npc.race;
+                document.getElementById('blacksmith-affiliation').innerText = npc.affiliation;
+                document.getElementById('blacksmith-description-text').innerText = npc.description;
+                document.getElementById('shop-description').innerText = npc.shopDescription;
+            }
+        });
+    </script>
+</body>
+</html>

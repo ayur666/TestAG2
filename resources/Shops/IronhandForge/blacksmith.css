@@ -1,0 +1,203 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  margin-top: 100px; /* Adjust based on header height */
+  background-color: #f4f4f9;
+  color: #333;
+}
+
+header{
+  color: #fff;
+  text-align: center;
+  padding: 1rem 0;
+  background-color: rgba(51, 51, 51, 0.8); /* Adjust the alpha value (0.8) for transparency */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%; /* Full width */
+  text-align: center; /* Center-align text and image */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for better visibility */
+  z-index: 1000; /* Ensure header stays above other content */
+}
+
+header h1,
+footer p {
+  margin: 0;
+}
+
+main {
+  padding: 1rem;
+}
+
+h1,
+h2, h3 {
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+ul li {
+  margin: 0.5rem 0;
+}
+
+ul li a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+ul li a:hover {
+  text-decoration: underline;
+}
+
+article {
+  border: 1px solid #ccc;
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: #fff;
+}
+
+#blacksmith-description {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+#blacksmith-info,
+#shop-info {
+  margin-bottom: 15px;
+}
+
+#blacksmith-info h3,
+#shop-info h3 {
+  color: #555;
+}
+
+#blacksmith-info p,
+#shop-info p {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+#blacksmith-info p strong,
+#shop-info p strong {
+  font-weight: bold;
+}
+
+#guild-image,
+#garret-ironhand-image,
+#ironhand-forge-image {
+  margin-bottom: 10px; /* Space between image and text */
+  max-width: 300px; /* Optional: set a maximum width */
+}
+
+#guild-image {
+  width: 5%;
+  height: 5%;
+}
+
+#garret-ironhand-image {
+  width: 10%;
+  height: 10%;
+}
+
+#ironhand-forge-image {
+  width: 25%;
+  height: 20%;
+}
+
+.item-tile {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+  list-style-type: none;
+}
+
+.item-name {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.item-details {
+  margin-top: 10px;
+  font-size: 0.95em;
+  color: #555;
+}
+
+.item-details p {
+  margin: 5px 0;
+}
+
+.buy-button {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.buy-button:hover {
+  background-color: #218838;
+}
+
+#sell-item-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto; /* Center the form horizontally */
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#sell-item-form input, select {
+  font-size: 16px;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box; /* Ensure padding and borders are included in the element's total width and height */
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#sell-item-form input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  outline: none;
+}
+
+#sell-item-form button {
+  font-size: 16px;
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#sell-item-form button:hover {
+  background-color: #218838;
+}
+
+.placeholder {
+  color: gray;
+}
